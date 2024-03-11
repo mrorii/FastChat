@@ -1606,6 +1606,20 @@ register_conv_template(
     )
 )
 
+# JSLM Beta
+# reference: https://huggingface.co/stabilityai/japanese-stablelm-instruct-beta-7b#usage
+register_conv_template(
+    Conversation(
+        name="jslm-beta",
+        system_template="[INST] <<SYS>>\n{system_message}\n<</SYS>>\n\n",
+        system_message="あなたは役立つアシスタントです。",
+        roles=("[INST]", "[/INST]"),
+        sep_style=SeparatorStyle.LLAMA2,
+        sep=" ",
+        sep2=" </s><s>",
+    )
+)
+
 
 if __name__ == "__main__":
     from fastchat.conversation import get_conv_template

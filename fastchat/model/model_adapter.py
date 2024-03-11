@@ -2278,9 +2278,20 @@ class ElyzaAdapter(BaseModelAdapter):
         return get_conv_template("elyza")
 
 
+class JslmBetaAdapter(BaseModelAdapter):
+    """The model adapter for JSLM Beta"""
+
+    def match(self, model_path: str):
+        return "japanese-stablelm-instruct-beta" in model_path.lower()
+
+    def get_default_conv_template(self, model_path: str) -> Conversation:
+        return get_conv_template("jslm-beta")
+
+
 # Note: the registration order matters.
 # The one registered earlier has a higher matching priority.
 register_model_adapter(ElyzaAdapter)  # This needs to be registered before Llama2Adapter
+register_model_adapter(JslmBetaAdapter)
 register_model_adapter(PeftModelAdapter)
 register_model_adapter(StableVicunaAdapter)
 register_model_adapter(VicunaAdapter)
