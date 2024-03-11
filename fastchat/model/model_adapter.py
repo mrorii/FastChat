@@ -2268,8 +2268,19 @@ class GemmaAdapter(BaseModelAdapter):
         return get_conv_template("gemma")
 
 
+class ElyzaAdapter(BaseModelAdapter):
+    """The model adapter for Elyza"""
+
+    def match(self, model_path: str):
+        return "elyza" in model_path.lower()
+
+    def get_default_conv_template(self, model_path: str) -> Conversation:
+        return get_conv_template("elyza")
+
+
 # Note: the registration order matters.
 # The one registered earlier has a higher matching priority.
+register_model_adapter(ElyzaAdapter)  # This needs to be registered before Llama2Adapter
 register_model_adapter(PeftModelAdapter)
 register_model_adapter(StableVicunaAdapter)
 register_model_adapter(VicunaAdapter)

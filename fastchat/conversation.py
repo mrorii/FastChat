@@ -1592,6 +1592,20 @@ register_conv_template(
     )
 )
 
+# Elyza
+# reference: https://huggingface.co/elyza/ELYZA-japanese-Llama-2-7b-instruct#usage
+register_conv_template(
+    Conversation(
+        name="elyza",
+        system_template="[INST] <<SYS>>\n{system_message}\n<</SYS>>\n\n",
+        system_message="あなたは誠実で優秀な日本人のアシスタントです。",
+        roles=("[INST]", "[/INST]"),
+        sep_style=SeparatorStyle.LLAMA2,
+        sep=" ",
+        sep2=" </s><s>",
+    )
+)
+
 
 if __name__ == "__main__":
     from fastchat.conversation import get_conv_template
