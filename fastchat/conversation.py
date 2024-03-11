@@ -1620,6 +1620,20 @@ register_conv_template(
     )
 )
 
+# JSLM Gamma
+# reference: https://huggingface.co/stabilityai/japanese-stablelm-instruct-gamma-7b#usage
+register_conv_template(
+    Conversation(
+        name="jslm-gamma",
+        system_template="[INST] {system_message}\n",
+        system_message="あなたは役立つアシスタントです。",
+        roles=("[INST]", "[/INST]"),
+        sep_style=SeparatorStyle.LLAMA2,
+        sep=" ",
+        sep2="</s>",
+    )
+)
+
 
 if __name__ == "__main__":
     from fastchat.conversation import get_conv_template
