@@ -31,8 +31,14 @@ def gpt_single_try(messages, model = "gpt-4"):
         messages = messages)
 
     result = ''
-    for choice in response.choices:
-        result += choice.message.content
+
+    try:
+        for choice in response.choices:
+            result += choice.message.content
+    except Exception as e:
+        # OpenAI's API sometimes returns no content due to ResponsibleAIPolicyViolation
+        # https://community.openai.com/t/openai-gpt-4api-error-attributeerror-content/425620
+        print(f"Error while parsing openai response: {response=}, {e=}")
 
     return result
 
