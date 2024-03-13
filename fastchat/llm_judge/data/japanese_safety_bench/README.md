@@ -63,6 +63,16 @@ python gen_safety_judgement.py --model-list elyza-japanese-llama-2-7b-instruct
 TODO
 ```
 
+### Create instruction tuning training data
+
+```bash
+cd fastchat/llm_judge/
+
+export OPENAI_AZURE_API_KEY=XXXXXX
+export OPENAI_AZURE_API_BASE=XXXXXX
+python gen_gpt_answer.py
+```
+
 ## Generating `question.jsonl`
 
 `question.jsonl` was generated via the following.

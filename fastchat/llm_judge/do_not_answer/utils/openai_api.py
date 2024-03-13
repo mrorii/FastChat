@@ -24,11 +24,12 @@ def setup_openai_api(model: str, use_azure=True):
         return openai.ChatCompletion.create
 
 
-def gpt_single_try(messages, model = "gpt-4"):
+def gpt_single_try(messages, model="gpt-4", max_tokens=None):
     openai_chat_completion_func = setup_openai_api(model)
     response = openai_chat_completion_func(
         model=model,
-        messages = messages)
+        messages=messages,
+        max_tokens=max_tokens)
 
     result = ''
 
@@ -42,11 +43,11 @@ def gpt_single_try(messages, model = "gpt-4"):
 
     return result
 
-def gpt(messages, model = "gpt-3.5-turbo", num_retries=3):
+def gpt(messages, model = "gpt-3.5-turbo", num_retries=3, max_tokens=None):
     r = ''
     for _ in range(num_retries):
         try:
-            r = gpt_single_try(messages, model)
+            r = gpt_single_try(messages, model, max_tokens=max_tokens)
             break
         except openai.error.OpenAIError as exception:
             print(f"{exception}. Retrying...")
