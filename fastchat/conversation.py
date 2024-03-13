@@ -34,6 +34,7 @@ class SeparatorStyle(IntEnum):
     DEEPSEEK_CHAT = auto()
     METAMATH = auto()
     YUAN2 = auto()
+    JSLM_GAMMA = auto()
 
 
 IMAGE_PLACEHOLDER_STR = "$$<image>$$"
@@ -269,6 +270,18 @@ class Conversation:
                 else:
                     ret += ""
             ret = ret.rstrip("<n>") + seps[0]
+            return ret
+        elif self.sep_style == SeparatorStyle.JSLM_GAMMA:
+            # Use only the latest two messages, as this model is trained
+            # using a single turn chat dataset, and will not work well
+            # with multi-turn chat
+            ret = system_prompt + self.sep
+            self.messages = self.messages[-2:]
+            for role, message in self.messages:
+                if message:
+                    ret += role + ":\n" + message + self.sep
+                else:
+                    ret += role + ":\n"
             return ret
         else:
             raise ValueError(f"Invalid style: {self.sep_style}")
@@ -1622,13 +1635,12 @@ register_conv_template(
 
 # JSLM Gamma
 # reference: https://huggingface.co/stabilityai/japanese-stablelm-instruct-gamma-7b#usage
-# TODO: wipe the previous messages, as this model does not support multi-turn chat
 register_conv_template(
     Conversation(
         name="jslm-gamma",
         system_message="以下は、タスクを説明する指示です。要求を適切に満たす応答を書きなさい。",
         roles=("### 指示", "### 応答"),
-        sep_style=SeparatorStyle.ROBIN,
+        sep_style=SeparatorStyle.JSLM_GAMMA,
         sep="\n\n",
     )
 )
