@@ -1622,15 +1622,14 @@ register_conv_template(
 
 # JSLM Gamma
 # reference: https://huggingface.co/stabilityai/japanese-stablelm-instruct-gamma-7b#usage
+# TODO: wipe the previous messages, as this model does not support multi-turn chat
 register_conv_template(
     Conversation(
         name="jslm-gamma",
-        system_template="[INST] {system_message}\n",
-        system_message="あなたは役立つアシスタントです。",
-        roles=("[INST]", "[/INST]"),
-        sep_style=SeparatorStyle.LLAMA2,
-        sep=" ",
-        sep2="</s>",
+        system_message="以下は、タスクを説明する指示です。要求を適切に満たす応答を書きなさい。",
+        roles=("### 指示", "### 応答"),
+        sep_style=SeparatorStyle.ROBIN,
+        sep="\n\n",
     )
 )
 

@@ -22,6 +22,7 @@ pip install -e ".[model_worker,webui]"
 
 ```bash
 python -m fastchat.serve.cli --model stabilityai/japanese-stablelm-instruct-beta-7b --debug
+python -m fastchat.serve.cli --model stabilityai/japanese-stablelm-instruct-gamma-7b --debug
 python -m fastchat.serve.cli --model elyza/ELYZA-japanese-Llama-2-7b-instruct --debug
 ```
 
