@@ -70,7 +70,43 @@ cd fastchat/llm_judge/
 
 export OPENAI_AZURE_API_KEY=XXXXXX
 export OPENAI_AZURE_API_BASE=XXXXXX
-python gen_gpt_answer.py
+python gen_gpt_answer.py # This writes to data/japanese_safety_bench/model_answer/gpt-4.jsonl
+
+# Convert the output to a format that can be used by SFT/DPO code
+# Refer to https://www.notion.so/stabilityai/How-to-run-SFT-DPO-26a4108de6aa4c80bb9463e49919052b?pvs=4#12190dad152a4c9ebf3e971caee38080
+jq -c '{id: .question_id|tostring, messages: [{content: .instruction, role: "human"}, {content: .response, role: "assistant"}]}' data/japanese_safety_bench/model_answer/gpt-4.jsonl > data/japanese_safety_bench/model_answer/gpt-4-for-sft.jsonl
+```
+
+Finally, convert this to a Hugging Face dataset via the following:
+
+```python
+from datasets import load_dataset
+ds = load_dataset("json", data_files={"train": "data/japanese_safety_bench/model_answer/gpt-4-for-sft.jsonl"})['train']
+ds = ds.train_test_split(test_size=0.1, shuffle=True, seed=42)
+ds.save_to_disk("/path/to/processed/do-not-answer-ja-gpt4")
+```
+
+### Running instruction tuning
+
+```bash
+git clone git@github.com:Stability-AI/jp-alignment-handbook.git
+git checkout dev/fine-tuning-safety
+
+python3.10 -mvenv .venv
+source .venv/bin/activate
+pip install torch==2.1.2 --index-url https://download.pytorch.org/whl/cu118
+pip install -r requirements.txt
+pip install .
+pip install flash-attn==2.3.6 --no-build-isolation
+
+export WANDB_API_KEY=UPDATE_ME
+export EXP_NAME=jslm2-1_6b-jp-sft-UPDATE_ME
+
+# If running on a single node
+ACCELERATE_LOG_LEVEL=info accelerate launch --config_file recipes/accelerate_configs/deepspeed_zero3.yaml scripts/run_sft.py recipes/jslm2/sft/${EXP_NAME}.yaml
+
+# If running on multiple nodes
+sbatch ./scripts/run_sft.sh
 ```
 
 ## Generating `question.jsonl`
