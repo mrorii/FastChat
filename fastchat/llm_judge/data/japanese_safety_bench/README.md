@@ -100,13 +100,8 @@ pip install .
 pip install flash-attn==2.3.6 --no-build-isolation
 
 export WANDB_API_KEY=UPDATE_ME
-export EXP_NAME=jslm2-1_6b-jp-sft-UPDATE_ME
-
-# If running on a single node
-ACCELERATE_LOG_LEVEL=info accelerate launch --config_file recipes/accelerate_configs/deepspeed_zero3.yaml scripts/run_sft.py recipes/jslm2/sft/${EXP_NAME}.yaml
-
-# If running on multiple nodes
-sbatch ./scripts/run_sft.sh
+export EXP_NAME=jslm2-1_6b-jp-sft-v1_13_1_safety
+sbatch run.slurm
 ```
 
 ## Generating `question.jsonl`
