@@ -18,6 +18,19 @@ pip install --upgrade pip  # enable PEP 660 support
 pip install -e ".[model_worker,webui]"
 ```
 
+### Adding support for new models
+
+In order to support a new model, you need to handle its prompt template and model loading by modifying the following 2 files:
+
+- [conversation.py](https://github.com/mrorii/FastChat/blob/8eb273924527a1850ad6aeaf9b1d304a72e01626/fastchat/conversation.py): handles prompt template
+- [model_adapter.py](https://github.com/mrorii/FastChat/blob/8eb273924527a1850ad6aeaf9b1d304a72e01626/fastchat/model/model_adapter.py): handles model loading (and also configures the prompt template declared in `conversation.py`)
+
+See the following for some actual examples of how Japanese models were supported:
+- https://github.com/mrorii/FastChat/blob/8eb273924527a1850ad6aeaf9b1d304a72e01626/fastchat/conversation.py#L1608-L1646
+- https://github.com/mrorii/FastChat/blob/8eb273924527a1850ad6aeaf9b1d304a72e01626/fastchat/model/model_adapter.py#L2271-L2305
+
+Also see the original documentation from FastChat: https://github.com/lm-sys/FastChat/blob/d04ce6453ae016d9e03626b679c07aa1388dcbee/docs/model_support.md
+
 ### Chat with the model in CLI
 
 ```bash
