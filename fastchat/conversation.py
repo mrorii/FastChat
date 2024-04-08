@@ -1619,6 +1619,21 @@ register_conv_template(
     )
 )
 
+# Rakuten
+# reference: https://huggingface.co/Rakuten/RakutenAI-7B-instruct#usage
+# reference: https://huggingface.co/Rakuten/RakutenAI-7B-chat#usage
+register_conv_template(
+    Conversation(
+        name="rakuten",
+        system_template="{system_message}",
+        system_message="A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions. ",
+        roles=("USER", "ASSISTANT"),
+        sep_style=SeparatorStyle.ADD_COLON_TWO,
+        sep=" ",
+        sep2="</s>",
+    )
+)
+
 # JSLM Beta
 # reference: https://huggingface.co/stabilityai/japanese-stablelm-instruct-beta-7b#usage
 register_conv_template(

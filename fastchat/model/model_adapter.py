@@ -2278,6 +2278,16 @@ class ElyzaAdapter(BaseModelAdapter):
         return get_conv_template("elyza")
 
 
+class RakutenAdapter(BaseModelAdapter):
+    """The model adapter for Rakuten"""
+
+    def match(self, model_path: str):
+        return "rakuten" in model_path.lower()
+
+    def get_default_conv_template(self, model_path: str) -> Conversation:
+        return get_conv_template("rakuten")
+
+
 class JslmBetaAdapter(BaseModelAdapter):
     """The model adapter for JSLM Beta"""
 
