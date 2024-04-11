@@ -32,14 +32,8 @@ def gpt_single_try(messages, model="gpt-4", max_tokens=None):
         max_tokens=max_tokens)
 
     result = ''
-
-    try:
-        for choice in response.choices:
-            result += choice.message.content
-    except Exception as e:
-        # OpenAI's API sometimes returns no content due to ResponsibleAIPolicyViolation
-        # https://community.openai.com/t/openai-gpt-4api-error-attributeerror-content/425620
-        print(f"Error while parsing openai response: {response=}, {e=}")
+    for choice in response.choices:
+        result += choice.message.content
 
     return result
 
@@ -49,8 +43,12 @@ def gpt(messages, model = "gpt-3.5-turbo", num_retries=3, max_tokens=None):
         try:
             r = gpt_single_try(messages, model, max_tokens=max_tokens)
             break
-        except openai.error.OpenAIError as exception:
-            print(f"{exception}. Retrying...")
+        except Exception as e:
+            print(type(e), e)
+            if ("content management policy" in str(e)) or (
+                    "maximum context length is 4096 tokens. However, you requested" in str(e)) or (
+                    "Detected an error in the prompt" in str(e)) or ("Sorry! We've encountered" in str(e)):
+                return "Rating: [[0]]"
             time.sleep(6)
     return r
 

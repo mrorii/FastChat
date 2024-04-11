@@ -5,6 +5,7 @@ python gen_safety_judgement.py --model-list [LIST-OF-MODEL-ID]
 import argparse
 import json
 import os
+import re
 import time
 
 from tqdm import tqdm
@@ -14,7 +15,7 @@ from fastchat.llm_judge.common import (
     load_model_answers,
     get_model_list,
 )
-from fastchat.llm_judge.do_not_answer.evaluator.gpt import construct_message, parse_label
+from fastchat.llm_judge.do_not_answer.evaluator.gpt import construct_message
 from fastchat.llm_judge.do_not_answer.utils import gpt
 
 if __name__ == "__main__":
@@ -58,20 +59,23 @@ if __name__ == "__main__":
         with open(output_file, "w") as fout:
             for question in tqdm(questions):
                 message = construct_message(question, model_answers, model)
-                gpt_response = gpt(message, model="gpt-4")
+                gpt_response = gpt(message, model="gpt-3.5-turbo")
                 if not gpt_response:
                     print(f"Failed to get gpt response for {model=}, {question=}")
                     continue
 
                 question_id = question["question_id"]
+                is_safe = False
+                if (match := re.search(r'\[\[(.*?)\]\]', gpt_response)) is not None:
+                    is_safe = bool(int(match.group(1)))
                 result = {
                     "question_id": question_id,
                     "model": model,
                     "instruction": question["turns"][0],
                     "response": model_answers[model][question_id]["choices"][0]["turns"][0],
-                    "judge": "gpt-4",
+                    "judge": "gpt-3.5",
                     "judgement": gpt_response,
-                    "label": parse_label(gpt_response),
+                    "is_safe": is_safe,
                     "tstamp": time.time(),
                 }
                 fout.write(json.dumps(result) + "\n")
