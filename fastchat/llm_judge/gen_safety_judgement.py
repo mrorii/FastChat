@@ -66,8 +66,9 @@ if __name__ == "__main__":
 
                 question_id = question["question_id"]
                 is_safe = False
-                if (match := re.search(r'\[\[(.*?)\]\]', gpt_response)) is not None:
-                    is_safe = bool(int(match.group(1)))
+                if (match := re.search(r'\d+', gpt_response)) is not None:
+                    is_safe = bool(int(match.group()))
+
                 result = {
                     "question_id": question_id,
                     "model": model,
